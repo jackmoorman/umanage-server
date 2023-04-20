@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(cuid())
+  email       String     @unique
+  password    String
+  first_name  String?
+  last_name   String?
+  properties  Property[]
+  security    Security?  @relation("security", fields: [security_id], references: [id])
+  security_id String     @unique
+}
+
+model Security {
+  id      String @id @default(cuid())
+  user    User?  @relation("security")
+  user_id String @unique
+}
+
+model Property {
+  id                String      @id @default(cuid())
+  name              String?
+  address_number    String
+  road_name         String
+  road_type         String
+  owner             User        @relation(fields: [owner_id], references: [id])
+  owner_id          String
+  purchase_date     DateTime
+  purchase_price    Int
+  city              String
+  state             String
+  zip_code          Int
+  updated_on        DateTime    @default(now())
+  total_revenue     Int
+  total_expense     Int
+  total_profit      Int
+  data_points       DataPoint[]
+  current_tenant    Tenant?     @relation("current_tenant", fields: [current_tenant_id], references: [id])
+  current_tenant_id String?     @unique
+  previous_tenants  Tenant[]
+}
+
+model DataPoint {
+  id          String   @id @default(cuid())
+  description String
+  property    Property @relation(fields: [property_id], references: [id])
+  property_id String
+  income      Int
+  expense     Int
+}
+
+model Tenant {
+  id                  String     @id @default(cuid())
+  email               String     @unique
+  first_name          String?
+  last_name           String?
+  current_property    Property?  @relation("current_tenant")
+  current_property_id String?
+  previous_properties Property[]
+}
