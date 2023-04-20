@@ -12,6 +12,8 @@ const app: Express = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+// console.log(process.env.DATABASE_URL);
+console.log(`${process.env.DB_HOST}`);
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   const err = {

@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "NODE_ENV=production node ./dist/index.js",
     "build": "tsc",
-    "server": "concurrently \"npx tsc --watch \" \"nodemon ./dist/index.js\"",
+    "server": "NODE_ENV=development concurrently \"npx tsc --watch \" \"nodemon ./dist/index.js\"",
     "db": "docker-compose up",
     "db-stop": "docker-compose stop"
   },
