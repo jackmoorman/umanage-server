@@ -16,8 +16,12 @@ authRouter.post(
   }
 );
 
-authRouter.post('/signup', (req: Request, res: Response) => {
-  return res.status(200);
-});
+authRouter.post(
+  '/signup',
+  authController.createUser,
+  (req: Request, res: Response) => {
+    return res.status(200);
+  }
+);
 
 export default authRouter;

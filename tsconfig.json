@@ -7,5 +7,6 @@
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["server/**/*", "lib/**/*"]
+  "include": ["server/**/*", "lib/**/*"],
+  "files": ["types.d.ts"]
 }

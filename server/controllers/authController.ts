@@ -23,12 +23,35 @@ const authController = {
   },
 
   createUser: async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      q1,
+      answerOne,
+      q2,
+      answerTwo,
+      q3,
+      answerThree,
+    }: NewUser = req.body;
     try {
       const newUser = await prisma.user.create({
         data: {
           email: email,
           password: password,
+          first_name: firstName,
+          last_name: lastName,
+          security: {
+            create: {
+              question_one: q1,
+              answer_one: answerOne,
+              question_two: q2,
+              answer_two: answerTwo,
+              question_three: q3,
+              answer_three: answerThree,
+            },
+          },
         },
       });
     } catch (err) {

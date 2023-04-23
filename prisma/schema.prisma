@@ -7,25 +7,32 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = ""
-  // url      = env("DATABASE_URL")
+  // url      = ""
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String     @id @default(cuid())
-  email       String     @unique
-  password    String
-  first_name  String?
-  last_name   String?
-  properties  Property[]
-  security    Security?  @relation("security", fields: [security_id], references: [id])
-  security_id String     @unique
+  id         String     @id @default(cuid())
+  email      String     @unique
+  password   String
+  first_name String?
+  last_name  String?
+  properties Property[]
+  // security    Security?  @relation(fields: [security_id], references: [id])
+  security   Security?
+  // security_id String?    @unique
 }
 
 model Security {
-  id      String @id @default(cuid())
-  user    User?  @relation("security")
-  user_id String @unique
+  id             String @id @default(cuid())
+  user           User?  @relation(fields: [user_id], references: [id])
+  user_id        String @unique
+  question_one   String
+  answer_one     String
+  question_two   String
+  answer_two     String
+  question_three String
+  answer_three   String
 }
 
 model Property {
