@@ -1,16 +1,30 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../lib/prisma.js';
+import { hash, compare } from 'bcrypt';
 
 const authController = {
   findUser: async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
     try {
       const user = await prisma.user.findUnique({
         where: {
-          email: email,
+          username: username.toLowerCase(),
         },
       });
-      if (!user) return res.status(400).json({ error: 'User not found' });
+
+      if (!user)
+        return res
+          .status(401)
+          .json({ error: 'The username or password is incorrect' });
+
+      const isPasswordValid = await compare(password, user.password);
+      console.log(isPasswordValid);
+
+      if (!isPasswordValid)
+        return res
+          .status(401)
+          .json({ error: 'The username or password is incorrect' });
+
       res.locals.user = user;
       return next();
     } catch (err) {
@@ -24,7 +38,7 @@ const authController = {
 
   createUser: async (req: Request, res: Response, next: NextFunction) => {
     const {
-      email,
+      username,
       password,
       firstName,
       lastName,
@@ -35,11 +49,14 @@ const authController = {
       q3,
       answerThree,
     }: NewUser = req.body;
+
+    const hashedPassword = await hash(password, 12);
+
     try {
       const newUser = await prisma.user.create({
         data: {
-          email: email,
-          password: password,
+          username: username.toLowerCase(),
+          password: hashedPassword,
           first_name: firstName,
           last_name: lastName,
           security: {
@@ -54,6 +71,10 @@ const authController = {
           },
         },
       });
+      if (!newUser)
+        return res.status(401).json({ error: 'Error creating user' });
+      res.locals.newUser = newUser;
+      return next();
     } catch (err) {
       return next({
         log: 'Error creating user',

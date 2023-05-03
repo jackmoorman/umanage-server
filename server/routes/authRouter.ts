@@ -12,7 +12,7 @@ authRouter.post(
   '/login',
   authController.findUser,
   (req: Request, res: Response) => {
-    return res.status(200);
+    return res.status(200).json({ success: 'Successfully logged in.' });
   }
 );
 
@@ -20,7 +20,7 @@ authRouter.post(
   '/signup',
   authController.createUser,
   (req: Request, res: Response) => {
-    return res.status(200);
+    return res.status(200).json(res.locals.user);
   }
 );
 
